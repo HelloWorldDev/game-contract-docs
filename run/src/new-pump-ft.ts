@@ -4,7 +4,7 @@ import { Program } from "@coral-xyz/anchor";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import BN from "bn.js";
 
-export const PROGRAM_ID = new PublicKey("GAme18XEG9sPN233Gu8NB1VGFgxCnrhZ8SG9dEWmKKjV");
+export const PROGRAM_ID = new PublicKey("GameEs6zXFFGhE5zCdx2sqeRZkL7uYzPsZuSVn1fdxHF");
 
 export const TOKEN_METADATA_PROGRAM_ID = new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
 

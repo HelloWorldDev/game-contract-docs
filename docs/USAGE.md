@@ -24,15 +24,13 @@ Game.com
 Game.com 是进行改良优化后 meme coin 发射平台。
 
 ```typescript
-// mainnet NEW GAME Program ID
+// mainnet/testnet NEW GAME Program ID
 const MAINNET_PROGRAM_ID = "GameEs6zXFFGhE5zCdx2sqeRZkL7uYzPsZuSVn1fdxHF";
-// testnet NEW GAME Program ID
-const TESTNET_PROGRAM_ID = "GAme18XEG9sPN233Gu8NB1VGFgxCnrhZ8SG9dEWmKKjV";
 
 // mainnet/testnet TOKEN_METADATA_PROGRAM_ID
 export const NEWGAME_TOKEN_METADATA_PROGRAM_ID = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s";
 
-// IDL：详见/target/idls内：mainnet/testnet
+// IDL：详见/target/idl/new_pump.json
 ```
 
 ## 安装
@@ -75,7 +73,7 @@ const owner = loadKeypair("~/.config/solana/id.json");
 const wallet = new anchor.Wallet(owner);
 const provider = new anchor.AnchorProvider(connection, wallet, { commitment: "confirmed" });
 anchor.setProvider(provider);
-const newPumpProgramId = new PublicKey("GAme18XEG9sPN233Gu8NB1VGFgxCnrhZ8SG9dEWmKKjV");
+const newPumpProgramId = new PublicKey("GameEs6zXFFGhE5zCdx2sqeRZkL7uYzPsZuSVn1fdxHF");
 const newPumpFunProgram: anchor.Program<NewPump> = new anchor.Program(NewPumpIDL, newPumpProgramId, provider);
 ```
 
