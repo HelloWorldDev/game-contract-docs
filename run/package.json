@@ -1,0 +1,18 @@
+{
+  "name": "run",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "start prod": "ts-node src/index_prod.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@coral-xyz/anchor": "0.29.0",
+    "@solana-developers/helpers": "^2.3.0",
+    "@solana/web3.js": "^1.93.0"
+  }
+}

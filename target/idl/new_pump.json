@@ -1,0 +1,965 @@
+{
+  "version": "0.1.0",
+  "name": "new_pump",
+  "constants": [
+    {
+      "name": "FEE_RECIPIENT",
+      "type": "string",
+      "value": "\"fee_recipient\""
+    },
+    {
+      "name": "BONDING_CURVE_SEED",
+      "type": "string",
+      "value": "\"bonding_curve\""
+    },
+    {
+      "name": "GLOBAL_STATE_SEED",
+      "type": "string",
+      "value": "\"global_state\""
+    },
+    {
+      "name": "BONDING_CURVE_TOKEN_SEED",
+      "type": "string",
+      "value": "\"bonding_curve_token\""
+    },
+    {
+      "name": "EVENT_AUTHORITY_SEED",
+      "type": "string",
+      "value": "\"event_authority\""
+    }
+  ],
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalState",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "global_state"
+              }
+            ]
+          }
+        },
+        {
+          "name": "feeRecipient",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "fee_recipient"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bondingCurve",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "bonding_curve"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bondingCurveToken",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "bonding_curve_token"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "eventAuthority",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "__event_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "program",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "CreateArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "buy",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "feeRecipient",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "fee_recipient"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "globalState",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "global_state"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bondingCurve",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "bonding_curve"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bondingCurveToken",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "bonding_curve_token"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "eventAuthority",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "__event_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "program",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "BuyArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sell",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "feeRecipient",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "fee_recipient"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "globalState",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "global_state"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bondingCurve",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "bonding_curve"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bondingCurveToken",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "bonding_curve_token"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "eventAuthority",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "__event_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "program",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "SellArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "withdraw",
+      "accounts": [
+        {
+          "name": "platform",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "globalState",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "global_state"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bondingCurve",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "bonding_curve"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bondingCurveToken",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Mint",
+                "path": "mint"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "bonding_curve_token"
+              }
+            ]
+          }
+        },
+        {
+          "name": "platformToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "eventAuthority",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "__event_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "program",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "collect",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "acceptor",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "feeRecipient",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "fee_recipient"
+              }
+            ]
+          }
+        },
+        {
+          "name": "globalState",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "global_state"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "collectAmount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updateGlobalState",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalState",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "global_state"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "UpdateStateArgs"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "GlobalState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "isInitialized",
+            "type": "bool"
+          },
+          {
+            "name": "superAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "withdrawAuthority",
+            "type": "publicKey"
+          },
+          {
+            "name": "feeRate",
+            "type": "u64"
+          },
+          {
+            "name": "targetLamports",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CurveInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tokenSupply",
+            "type": "u64"
+          },
+          {
+            "name": "solBalance",
+            "type": "u64"
+          },
+          {
+            "name": "isOnRaydium",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "BuyArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "solCost",
+            "type": "u64"
+          },
+          {
+            "name": "minTokenAmount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateStateArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "superAdmin",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "withdrawAuthority",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "feeRate",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "targetLamports",
+            "type": {
+              "option": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SellArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tokenCost",
+            "type": "u64"
+          },
+          {
+            "name": "minSolAmount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "CreateEvent",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "symbol",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "uri",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "bondingCurve",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "TradeEvent",
+      "fields": [
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "solAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "tokenAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "feeAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "isBuy",
+          "type": "bool",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "virtualSolReserves",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "virtualTokenReserves",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "bondingCurveSol",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "bondingCurveToken",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "should2raydium",
+          "type": "bool",
+          "index": false
+        },
+        {
+          "name": "userTokenBalance",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "userTokenDecimal",
+          "type": "u8",
+          "index": false
+        },
+        {
+          "name": "feeRecipientBalance",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "WithdrawEvent",
+      "fields": [
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "solAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "tokenAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "receiver",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "OnRaydium",
+      "msg": "This token is on the raydium, please swap on the raydium"
+    },
+    {
+      "code": 6001,
+      "name": "ExceededSlippage",
+      "msg": "Exceeds desired slippage limit"
+    },
+    {
+      "code": 6002,
+      "name": "NotEnoughTokens",
+      "msg": "Not enough tokens to sell"
+    },
+    {
+      "code": 6003,
+      "name": "OnBondingCurve",
+      "msg": "This token is on the bonding curve."
+    },
+    {
+      "code": 6004,
+      "name": "AlreadyInitialized",
+      "msg": "already initialized"
+    },
+    {
+      "code": 6005,
+      "name": "Unauthorized",
+      "msg": "Unauthorized for Collection"
+    },
+    {
+      "code": 6006,
+      "name": "NotInitialized",
+      "msg": "not initialized"
+    }
+  ],
+  "metadata": {
+    "address": "GAme18XEG9sPN233Gu8NB1VGFgxCnrhZ8SG9dEWmKKjV"
+  }
+}
