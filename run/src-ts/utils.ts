@@ -1,6 +1,4 @@
-import {
-    getSimulationComputeUnits
-} from "@solana-developers/helpers";
+import { getSimulationComputeUnits } from "@solana-developers/helpers";
 import {
     AddressLookupTableAccount,
     ComputeBudgetProgram,
@@ -9,7 +7,7 @@ import {
     PublicKey,
     TransactionInstruction,
     TransactionMessage,
-    VersionedTransaction
+    VersionedTransaction,
 } from "@solana/web3.js";
 import fs from "fs";
 import resolve from "resolve-dir";
@@ -23,14 +21,14 @@ export function loadKeypair(jsonPath: string): Keypair {
 }
 
 export function loadProgramIdl(filepath: string) {
-    return JSON.parse(fs.readFileSync(resolve(filepath), "utf-8"))
+    return JSON.parse(fs.readFileSync(resolve(filepath), "utf-8"));
 }
 
 export async function buildOptimalTransaction({
     connection,
     instructions,
     payer,
-    lookupTables
+    lookupTables,
 }: {
     connection: Connection;
     instructions: Array<TransactionInstruction>;
@@ -39,12 +37,7 @@ export async function buildOptimalTransaction({
 }) {
     const [microLamports, units, recentBlockhash] = await Promise.all([
         100,
-        await getSimulationComputeUnits(
-            connection,
-            instructions,
-            payer,
-            lookupTables
-        ).then(units => {
+        await getSimulationComputeUnits(connection, instructions, payer, lookupTables).then((units) => {
             if (units) {
                 return units + 1000;
             } else {
@@ -54,9 +47,7 @@ export async function buildOptimalTransaction({
         await connection.getLatestBlockhash(),
     ]);
 
-    instructions.unshift(
-        ComputeBudgetProgram.setComputeUnitPrice({ microLamports }),
-    );
+    instructions.unshift(ComputeBudgetProgram.setComputeUnitPrice({ microLamports }));
     if (units) {
         instructions.unshift(ComputeBudgetProgram.setComputeUnitLimit({ units }));
     }
@@ -66,7 +57,7 @@ export async function buildOptimalTransaction({
                 instructions,
                 recentBlockhash: recentBlockhash.blockhash,
                 payerKey: payer,
-            }).compileToV0Message(lookupTables),
+            }).compileToV0Message(lookupTables)
         ),
         recentBlockhash,
     };
@@ -81,7 +72,7 @@ export async function sendAndConfirmOptimalTransaction({
     connection: Connection;
     ixs: TransactionInstruction[];
     payer: Keypair;
-    otherSigners?: Keypair[]
+    otherSigners?: Keypair[];
 }): Promise<string> {
     let txResult = await buildOptimalTransaction({
         connection,
@@ -104,36 +95,8 @@ export async function sendAndConfirmOptimalTransaction({
             lastValidBlockHeight: txResult.recentBlockhash.lastValidBlockHeight,
             signature: txsig,
         },
-        "confirmed",
+        "confirmed"
     );
-
-    return txsig;
-}
-
-export async function sendTransactionWithoutConfirm({
-    connection,
-    ixs,
-    payer,
-    otherSigners = [],
-}: {
-    connection: Connection;
-    ixs: TransactionInstruction[];
-    payer: Keypair;
-    otherSigners?: Keypair[]
-}): Promise<string> {
-    const tx = new VersionedTransaction(new TransactionMessage({
-        recentBlockhash: ((await connection.getLatestBlockhash()).blockhash),
-        instructions: ixs,
-        payerKey: payer.publicKey,
-    }).compileToV0Message());
-
-    tx.sign([payer]);
-
-    if (otherSigners) {
-        tx.sign(otherSigners);
-    }
-
-    let txsig = await connection.sendTransaction(tx, confirmOptions);
 
     return txsig;
 }
