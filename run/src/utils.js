@@ -101,3 +101,8 @@ export function calToken2Sol(token_supply, sol_balance, inputValue) {
     let lamports_received = numToString(new BigNumber(Number(current_sol_balance) - Number(km / n_minus_k)).div(1e9));
     return lamports_received * 0.99;
 }
+
+export const numToString = (num) => {
+    let m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
+    return num.toFixed(Math.max(0, (m[1] || "").length - m[2]));
+};
