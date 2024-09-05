@@ -33,6 +33,8 @@ const TESTNET_FEE_RECIPIENT = "GnpaTWNTiK8HnBEzg9onjHkJvkqw3A7Jm86NXeUcU1M5";
 
 // IDL：详见/target/idl/new_pump.json
 
+// 计算买卖报价：详见 ==> /run/conversion.js
+
 // 支持的quote：详见/run/constant/quote.js
 // mainnet
 export const SOL = "So11111111111111111111111111111111111111112";
@@ -129,22 +131,21 @@ export function createIx(
 initVirtualQuoteReserves / initVirtualBaseReserves / isLaunchPermitted
 
 ```typescript
-isLaunchPermitted: true,
-    // 自动发射
-    (ix = await createIx(newPumpFunProgram, user.publicKey, quote_mint, mint.publicKey, fee_recipient, {
-        name: "Ansem Vs Tate",
-        symbol: "BOX",
-        uri: "https://cf-ipfs.com/ipfs/QmbUBYQ6vg3q2a4P93SGAkAbyn9p6aZ91V8Ly6UjM87rmW",
-        supply: new BN(100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))),
-        target: new BN(85 * Math.pow(10, 9)),
-        initVirtualQuoteReserves: new BN(0.352941 * 85000000000), //自动发射
-        initVirtualBaseReserves: new BN(1.073 * 100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))),
-        feeBps: new BN(100),
-        createFee: new BN(2 * LAMPORTS_PER_SOL),
-        isLaunchPermitted: true,
-    }));
+// 自动发射: isLaunchPermitted: true
+ix = await createIx(newPumpFunProgram, user.publicKey, quote_mint, mint.publicKey, fee_recipient, {
+    name: "Ansem Vs Tate",
+    symbol: "BOX",
+    uri: "https://cf-ipfs.com/ipfs/QmbUBYQ6vg3q2a4P93SGAkAbyn9p6aZ91V8Ly6UjM87rmW",
+    supply: new BN(100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))),
+    target: new BN(85 * Math.pow(10, 9)),
+    initVirtualQuoteReserves: new BN(0.352941 * 85000000000), //自动发射
+    initVirtualBaseReserves: new BN(1.073 * 100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))),
+    feeBps: new BN(100),
+    createFee: new BN(2 * LAMPORTS_PER_SOL),
+    isLaunchPermitted: true,
+});
 
-// 手动发射
+// 手动发射: isLaunchPermitted: false
 ix = await createIx(newPumpFunProgram, user.publicKey, quote_mint, mint.publicKey, fee_recipient, {
     name: "Ansem Vs Tate",
     symbol: "BOX",

@@ -1,23 +1,23 @@
-# 使用文档
+# V1 Contract Usage Documentation
 
-## 项目名称
+## Project Name
 
 Game.com
 
-## 目录
+## Catalog
 
-1. [简介](#简介)
-2. [安装](#安装)
-    - [前提条件](#前提条件)
-3. [local 使用方法](#local-使用方法)
-    - [初始化](#初始化)
-    - [创建代币](#创建代币)
-    - [买](#买)
-    - [卖](#卖)
+1. [Introduction](#Introduction)
+2. [Installation](#Installation)
+    - [Prerequisites](#Prerequisites)
+3. [LocalUsage](#LocalUsage)
+    - [Initialization](#Initialization)
+    - [CreateToken](#CreateToken)
+    - [Buy](#Buy)
+    - [Sell](#Sell)
 
-## 简介
+## Introduction
 
-Game.com 是进行改良优化后 meme coin 发射平台。
+Game.com is an enhanced and optimized meme coin launch platform.
 
 ```typescript
 // mainnet/testnet NEW GAME Program ID
@@ -26,41 +26,43 @@ const MAINNET_PROGRAM_ID = "GameEs6zXFFGhE5zCdx2sqeRZkL7uYzPsZuSVn1fdxHF";
 // mainnet/testnet TOKEN_METADATA_PROGRAM_ID
 export const NEWGAME_TOKEN_METADATA_PROGRAM_ID = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s";
 
-// IDL：详见/target/idl/new_pump.json
+// IDL: See ==> /target/idl/new_pump.json
 ```
 
-## 安装
+## Installation
 
-### 前提条件
+### Prerequisites
 
 -   **Node.js v18.x.x**
 
-    -   仅支持 Node.js 18 版本及其子版本， 19 或更高版本运行可能有问题。
-    -   检查版本：`node -v`
-    -   安装指定版本：
+    -   Supports only Node.js version 18 and its subversions. Versions 19 or higher may encounter issues.
+    -   Check version: `node -v`
+    -   Install specific version:
 
         ```sh
-        # 使用 nvm（Node Version Manager）来安装特定版本
+        # Use nvm (Node Version Manager) to install a specific version
         nvm install 18
         nvm use 18
         ```
 
-    -   安装链接：[Node.js](https://nodejs.org/en/download/package-manager)
+    -   Installation link: [Node.js](https://nodejs.org/en/download/package-manager)
 
 -   **Anchor v0.29.0**
-    -   检查版本：`anchor --version`
-    -   安装命令：
+    -   Check version: `anchor --version`
+    -   Installation command:
         ```sh
         cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
         avm install 0.29.0
         ```
-    -   安装链接：[Anchor](https://www.anchor-lang.com/docs/installation)
+    -   Installation link: [Anchor](https://www.anchor-lang.com/docs/installation)
 
-## local 使用方法
+## LocalUsage
 
-### 初始化
+### Initialization
 
-在使用合约方法之前，需要先进行初始化：
+Before using contract methods, initialization is required:
+
+Note: Please customize according to your situation!!!!!!!!!!!
 
 ```typescript
 const endpoint = "https://api.devnet.solana.com";
@@ -73,13 +75,13 @@ const newPumpProgramId = new PublicKey("GameEs6zXFFGhE5zCdx2sqeRZkL7uYzPsZuSVn1f
 const newPumpFunProgram: anchor.Program<NewPump> = new anchor.Program(NewPumpIDL, newPumpProgramId, provider);
 ```
 
-1. 创建连接 `Connection` 实例，可以更改 `endpoint` 以测试不同的节点。
-2. `owner` 为 solana 默认本地钱包。
-3. 创建 anchor provider 和 program 实例，根据需要修改 idl 接口文件路径。
+1. Create a `Connection` instance. You can change the `endpoint` to test different nodes.
+2. `owner` refers to the default local Solana wallet.
+3. Create the anchor provider and program instances, adjusting the IDL interface file path as needed.
 
-### 创建代币
+### CreateToken
 
-下面是创建代币的方法：
+How to Create Token:
 
 ```typescript
 ix = await createIx(
@@ -94,11 +96,18 @@ ix = await createIx(
 );
 ```
 
-`createIx` 为封装的调用合约 `create` 指令，`newPumpFunProgram` 为 program 实例，传入代币信息，`name` 代币名称，`symbol` 代币标识，`uri` 代币链下附属数据地址。`user.publicKey` 为用户公钥，`mint.publicKey` 为 mint 公钥。
+`createIx` is a wrapper for calling the contract `create` instruction.
+`newPumpFunProgram` is the program instance.
+which receives token information{}:
+`name` (Token name)
+`symbol` (Token symbol)
+`uri` (off-chain data address).
+`user.publicKey` is the user's PublicKey.
+`mint.publicKey` is the mint PublicKey.
 
-### 买
+### Buy
 
-下面是买的方法：
+How to Buy:
 
 ```typescript
 ix = await buyIx(
@@ -112,11 +121,16 @@ ix = await buyIx(
 );
 ```
 
-`buyIx` 为封装的调用合约 `buy` 指令，`newPumpFunProgram` 为 program 实例，`solCost` 为用户购买花费 sol 的数量，已经包含手续费，`minTokenAmount` 为最低接受到 token 数量，这个数值跟前端的模拟计算和用户选择的滑点有关，这里为 0 是为了方便交互。`user.publicKey` 为用户公钥，`mint.publicKey` 为 mint 公钥。
+`buyIx` is a wrapper for calling the contract `buy` instruction.
+`newPumpFunProgram` is the program instance.
+`solCost` represents the amount of SOL spent by the user, including fees.
+`minTokenAmount` is the minimum amount of tokens expected, which depends on frontend simulation and user-selected slippage; 0 is used here for simplicity.
+`user.publicKey` is the user's PublicKey.
+`mint.publicKey` is the mint PublicKey.
 
-### 卖
+### Sell
 
-下面是卖的方法：
+How to Sell:
 
 ```typescript
 ix = await sellIx(
@@ -130,4 +144,7 @@ ix = await sellIx(
 );
 ```
 
-`sellIx` 为封装的调用合约 `sell` 指令，`newPumpFunProgram` 为 program 实例，`tokenCost` 为用户卖出 tokens 的数量，`minSolAmount` 为最低接受到 sol 数量，这个数值跟前端的模拟计算和用户选择的滑点有关，这里为 0 是为了方便交互。`user.publicKey` 为用户公钥，`mint.publicKey` 为 mint 公钥。
+`sellIx` is a wrapper for calling the contract `sell` instruction. `newPumpFunProgram` is the program instance.
+`tokenCost` represents the amount of tokens sold by the user. `minSolAmount` is the minimum amount of SOL received, which depends on frontend simulation and user-selected slippage; 0 is used here for simplicity.
+`user.publicKey` is the user's PublicKey.
+`mint.publicKey` is the mint PublicKey.

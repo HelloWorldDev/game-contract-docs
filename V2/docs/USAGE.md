@@ -1,23 +1,23 @@
-# V2 合约使用文档
+# V2 Contract Usage Documentation
 
-## 项目名称
+## Project Name
 
 Game.com
 
-## 目录
+## Catalog
 
-1. [简介](#简介)
-2. [安装](#安装)
-    - [前提条件](#前提条件)
-3. [local 使用方法](#local-使用方法)
-    - [初始化](#初始化)
-    - [创建代币](#创建代币)
-    - [买](#买)
-    - [卖](#卖)
+1. [Introduction](#Introduction)
+2. [Installation](#Installation)
+    - [Prerequisites](#Prerequisites)
+3. [LocalUsage](#LocalUsage)
+    - [Initialization](#Initialization)
+    - [CreateToken](#CreateToken)
+    - [Buy](#Buy)
+    - [Sell](#Sell)
 
-## 简介
+## Introduction
 
-Game.com v2 版本 是一个基于 Solana 区块链的项目，是基于 Game.com 第一个版本的提升，旨在通过智能合约和流动性池实现代币的创建、买卖。本文档详细介绍了该项目的安装和使用方法。
+Game.com v2 is an enhanced version of the first Game.com project, based on the Solana blockchain. It aims to facilitate the creation and trading of tokens through smart contracts and liquidity pools. This document provides detailed instructions for installing and using the project.
 
 ```typescript
 // mainnet/testnet NEW GAME Program ID
@@ -31,9 +31,11 @@ const MAINNET_FEE_RECIPIENT = "6i8r7uZwqVyyhv1g1gm7yPdTGtuT21yofGVxHXi4aWM4";
 // testnet FEE_RECIPIENT
 const TESTNET_FEE_RECIPIENT = "GnpaTWNTiK8HnBEzg9onjHkJvkqw3A7Jm86NXeUcU1M5";
 
-// IDL：详见/target/idl/new_pump.json
+// IDL: See ==> /target/idl/new_pump.json
 
-// 支持的quote：详见/run/constant/quote.js
+// Calculate bid and ask prices: See ==> /run/conversion.js
+
+// Supported quotes: See ==> /run/constant/quote.js
 // mainnet
 export const SOL = "So11111111111111111111111111111111111111112";
 export const BAZINGA = "C3JX9TWLqHKmcoTDTppaJebX2U7DcUQDEHVSmJFz6K6S";
@@ -46,38 +48,40 @@ export const $WIF = "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm";
 
 ```
 
-## 安装
+## Installation
 
-### 前提条件
+### Prerequisites
 
 -   **Node.js v18.x.x**
 
-    -   仅支持 Node.js 18 版本及其子版本， 19 或更高版本运行可能有问题。
-    -   检查版本：`node -v`
-    -   安装指定版本：
+    -   Supports only Node.js version 18 and its subversions. Versions 19 or higher may encounter issues.
+    -   Check version: `node -v`
+    -   Install specific version:
 
         ```sh
-        # 使用 nvm（Node Version Manager）来安装特定版本
+        # Use nvm (Node Version Manager) to install a specific version
         nvm install 18
         nvm use 18
         ```
 
-    -   安装链接：[Node.js](https://nodejs.org/en/download/package-manager)
+    -   Installation link: [Node.js](https://nodejs.org/en/download/package-manager)
 
 -   **Anchor v0.29.0**
-    -   检查版本：`anchor --version`
-    -   安装命令：
+    -   Check version: `anchor --version`
+    -   Installation command:
         ```sh
         cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
         avm install 0.29.0
         ```
-    -   安装链接：[Anchor](https://www.anchor-lang.com/docs/installation)
+    -   Installation link: [Anchor](https://www.anchor-lang.com/docs/installation)
 
-## local 使用方法
+## LocalUsage
 
-### 初始化
+### Initialization
 
-在使用合约方法之前，需要先进行初始化：
+Before using contract methods, initialization is required:
+
+Note: Please customize according to your situation!!!!!!!!!!!
 
 ```typescript
 const endpoint = "https://api.devnet.solana.com";
@@ -90,13 +94,13 @@ const newPumpProgramId = new PublicKey("GameEs6zXFFGhE5zCdx2sqeRZkL7uYzPsZuSVn1f
 const newPumpFunProgram: anchor.Program<NewPump> = new anchor.Program(NewPumpIDL, newPumpProgramId, provider);
 ```
 
-1. 创建连接 `Connection` 实例，可以更改 `endpoint` 以测试不同的节点。
-2. `owner` 为 solana 默认本地钱包。
-3. 创建 anchor provider 和 program 实例，根据需要修改 idl 接口文件路径。
+1. Create a `Connection` instance. You can change the `endpoint` to test different nodes.
+2. `owner` refers to the default local Solana wallet.
+3. Create the anchor provider and program instances, adjusting the IDL interface file path as needed.
 
-### 创建代币
+### CreateToken
 
-下面是创建代币的方法：
+How to Create Token:
 
 ```typescript
 interface CreateArgs {
@@ -123,64 +127,63 @@ export function createIx(
 };
 ```
 
-注意：创建代币时分为自动发射和手动发射，两者参数部分不同，请注意！！！
+Note: Creating a token involves two modes—Automatic Launch and Manual Launch — requiring different parameters.
 
-区别：
+Please take note of the differences:
 initVirtualQuoteReserves / initVirtualBaseReserves / isLaunchPermitted
 
 ```typescript
-isLaunchPermitted: true,
-    // 自动发射
-    (ix = await createIx(newPumpFunProgram, user.publicKey, quote_mint, mint.publicKey, fee_recipient, {
-        name: "Ansem Vs Tate",
-        symbol: "BOX",
-        uri: "https://cf-ipfs.com/ipfs/QmbUBYQ6vg3q2a4P93SGAkAbyn9p6aZ91V8Ly6UjM87rmW",
-        supply: new BN(100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))),
-        target: new BN(85 * Math.pow(10, 9)),
-        initVirtualQuoteReserves: new BN(0.352941 * 85000000000), //自动发射
-        initVirtualBaseReserves: new BN(1.073 * 100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))),
-        feeBps: new BN(100),
-        createFee: new BN(2 * LAMPORTS_PER_SOL),
-        isLaunchPermitted: true,
-    }));
-
-// 手动发射
+// Automatic Launch: isLaunchPermitted: true
 ix = await createIx(newPumpFunProgram, user.publicKey, quote_mint, mint.publicKey, fee_recipient, {
     name: "Ansem Vs Tate",
     symbol: "BOX",
     uri: "https://cf-ipfs.com/ipfs/QmbUBYQ6vg3q2a4P93SGAkAbyn9p6aZ91V8Ly6UjM87rmW",
     supply: new BN(100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))),
     target: new BN(85 * Math.pow(10, 9)),
-    initVirtualQuoteReserves: new BN(0.352941 * 0.8 * 85000000000), //手动发射发射
-    initVirtualBaseReserves: new BN(1 * 100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))), //手动发射发射
+    initVirtualQuoteReserves: new BN(0.352941 * 85000000000), // Automatic Launch
+    initVirtualBaseReserves: new BN(1.073 * 100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))),
+    feeBps: new BN(100),
+    createFee: new BN(2 * LAMPORTS_PER_SOL),
+    isLaunchPermitted: true,
+});
+
+// Manual Launch: isLaunchPermitted: false
+ix = await createIx(newPumpFunProgram, user.publicKey, quote_mint, mint.publicKey, fee_recipient, {
+    name: "Ansem Vs Tate",
+    symbol: "BOX",
+    uri: "https://cf-ipfs.com/ipfs/QmbUBYQ6vg3q2a4P93SGAkAbyn9p6aZ91V8Ly6UjM87rmW",
+    supply: new BN(100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))),
+    target: new BN(85 * Math.pow(10, 9)),
+    initVirtualQuoteReserves: new BN(0.352941 * 0.8 * 85000000000), //Manual Launch
+    initVirtualBaseReserves: new BN(1 * 100 * Math.pow(10, 9)).mul(new BN(Math.pow(10, 6))), //Manual Launch
     feeBps: new BN(100),
     createFee: new BN(2 * LAMPORTS_PER_SOL),
     isLaunchPermitted: false,
 });
 ```
 
-createIx 参数说明：
+`createIx` Parameter Description:
 
--   `program`：program 实例。
--   `user`：创建代币的用户公钥。
--   `quoteMint`：quote 代币的 mint 地址，需为合法添加的 quote 代币。
--   `baseMint`：base 代币的 mint 地址。
--   `feeRecipient`：手续费接收地址。
--   `args`：代币参数。
+-   `program`: Program instance.
+-   `user`: User PublicKey.
+-   `quoteMint`: Mint address of the quote token, which must be a valid added quote token.
+-   `baseMint`: Mint address of the base token.
+-   `feeRecipient`: Address for receiving fees.
+-   `args`: Token parameters.
 
-args 说明：
+Args Description:
 
--   `name`、`symbol` 和 `uri`：代币的基本信息。
--   `supply`：代币的供应量，受 `baseMinSupply` 和 `baseMaxSupply` 约束。
--   `target`：quote 代币在 bonding curve 中所需的数量。
--   `initVirtualQuoteReserves` 和 `initVirtualBaseReserves`：组成 bonding curve 恒积公式的初始值。
--   `feeBps`：每次交易的手续费，单位为 bps（1% 到 50%）。
--   `createFee`：创建代币时需支付的费用，可以为 0。
--   `isLaunchPermitted`：控制代币是否自动发射，true 为自动发射，false 为手动发射。
+-   `name`、`symbol` 和 `uri`: Basic information of the token.
+-   `supply`: Token supply, constrained by `baseMinSupply` and `baseMaxSupply`.
+-   `target`：Required quantity of quote tokens in the bonding curve.
+-   `initVirtualQuoteReserves` and `initVirtualBaseReserves`: Initial values for the bonding curve accumulation formula.
+-   `feeBps`: Transaction fee per trade, measured in basis points (1% to 50%).
+-   `createFee`: Fee required for creating the token, can be zero.
+-   `isLaunchPermitted`: Controls whether the token is automatically launched. `true` for Automatic Launch, `false` for Manual Launch.
 
-### 买
+### Buy
 
-下面是买的方法：
+How to Buy:
 
 ```typescript
 interface BuyArgs {
@@ -199,23 +202,23 @@ export function buyIx(
 }
 ```
 
-buyIx 参数说明：
+`buyIx` Parameter Description:
 
--   `program`：program 实例。
--   `user`：创建代币的用户公钥。
--   `quoteMint`：quote 代币的 mint 地址，需为合法添加的 quote 代币。
--   `baseMint`：base 代币的 mint 地址。
--   `feeRecipient`：手续费接收地址。
--   `args`：代币参数。
+-   `program`: Program instance.
+-   `user`: User PublicKey.
+-   `quoteMint`: Mint address of the quote token. It must be a valid quote token.
+-   `baseMint`: Mint address of the base token.
+-   `feeRecipient`: Address for receiving fees.
+-   `args`: Token parameters.
 
-args 说明：
+Args Description:
 
--   `quoteCost`：花费的 quote 代币数量。
--   `minBaseAmount`：最少获取的 base 代币数量，以计算是否超过滑点。
+-   `quoteCost`: The amount of quote tokens the user is willing to spend.
+-   `minBaseAmount`: The minimum amount of base tokens the user expects to receive.
 
-### 卖
+### Sell
 
-下面是卖的方法：
+How to Sell:
 
 ```typescript
 interface SellArgs {
@@ -233,16 +236,16 @@ export function sellIx(
 }
 ```
 
-sellIx 参数说明：
+`sellIx` Parameter Description:
 
--   `program`：program 实例。
--   `user`：创建代币的用户公钥。
--   `quoteMint`：quote 代币的 mint 地址，需为合法添加的 quote 代币。
--   `baseMint`：base 代币的 mint 地址。
--   `feeRecipient`：手续费接收地址。
--   `args`：代币参数。
+-   `program`: Program instance.
+-   `user`: User PublicKey.
+-   `quoteMint`: Mint address of the quote token. It must be a valid quote token.
+-   `baseMint`: Mint address of the base token.
+-   `feeRecipient`: Address for receiving fees.
+-   `args`: Token parameters.
 
-参数说明：
+Args Description:
 
--   `baseCost`：花费的 base 代币数量。
--   `minQuoteAmount`：最少获取的 quote 代币数量，以计算是否超过滑点。
+-   `baseCost`: The amount of base tokens the user is willing to sell.
+-   `minQuoteAmount`: The minimum amount of quote tokens the user expects to receive.

@@ -8,14 +8,14 @@ import BN from "bn.js";
 async function main() {
     const endpoint = "https://api.devnet.solana.com";
     const connection = new Connection(endpoint, "confirmed");
-    // 本地账户
+    // Local Account
     const owner = loadKeypair("../config/user.json");
     const wallet = new anchor.Wallet(owner);
     const provider = new anchor.AnchorProvider(connection, wallet, { commitment: "confirmed" });
     anchor.setProvider(provider);
     const newPumpProgramId = new PublicKey(PROGRAM_ID);
     const newPumpFunProgram = new anchor.Program(NewPumpIDL, newPumpProgramId, provider);
-    // 账户：签名/支付，看本地情况更改
+   // Account: Signature/Payment, modify according to local setup
     const user = loadKeypair("../config/user.json");
     const mint = new Keypair();
 

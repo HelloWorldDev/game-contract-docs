@@ -28,8 +28,8 @@ async function main() {
     let ix2: TransactionInstruction;
     let txSig: string;
 
-    // Create：⚠️两种模式，参数不同！
-    // 自动发射
+    // Create: ⚠️ Two modes, different parameters!
+    // Automatic Launch
     ix = await createIx(newPumpFunProgram, user.publicKey, quote_mint, mint.publicKey, fee_recipient, {
         name: "Ansem Vs Tate",
         symbol: "BOX",
@@ -43,7 +43,7 @@ async function main() {
         isLaunchPermitted: true,
     });
 
-    // 手动发射
+    // Manual Launch
     ix = await createIx(newPumpFunProgram, user.publicKey, quote_mint, mint.publicKey, fee_recipient, {
         name: "Ansem Vs Tate",
         symbol: "BOX",
